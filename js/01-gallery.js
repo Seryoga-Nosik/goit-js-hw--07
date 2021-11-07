@@ -33,24 +33,23 @@ function onModalOpen(e) {
 
   if (e.target.nodeName !== 'IMG') return;
 
-  lightbox = basicLightbox.create(`<img src='${e.target.dataset.source}' alt='${e.target.alt}'>`);
+  lightbox = basicLightbox.create(`<img src='${e.target.dataset.source}' alt='${e.target.alt}'>`, {
+    onShow: lightbox => {
+      window.addEventListener('keydown', onEscClose);
+      window.addEventListener('keydown', onArrowPress);
+    },
+    onClose: lightbox => {
+      window.removeEventListener('keydown', onEscClose);
+      window.removeEventListener('keydown', onArrowPress);
+    },
+  });
   lightbox.show();
 
   lightboxImg = lightbox.element().querySelector('.basicLightbox__placeholder>img');
-
-  window.addEventListener('keydown', onEscClose);
-  window.addEventListener('keydown', onArrowPress);
 }
 
 function onEscClose(e) {
-  if (e.code === 'Escape') onModalClose();
-}
-
-function onModalClose() {
-  lightbox.close();
-
-  window.removeEventListener('keydown', onEscClose);
-  window.removeEventListener('keydown', onArrowPress);
+  if (e.code === 'Escape') lightbox.close();
 }
 
 function onArrowPress(e) {
